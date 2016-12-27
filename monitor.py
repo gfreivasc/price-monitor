@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import scrapy
-from models import Product
+from models import ProductItem
 
 
 MAX_ITEMS_KBM = 100
@@ -41,7 +41,7 @@ class MonitorSpider(scrapy.Spider):
         listing = response.xpath("//div[@class='listagem-box']")
 
         for item in listing:
-            product = Product()
+            product = ProductItem()
 
             product['name'] = item.xpath(
                 ".//span[@class='H-titulo']/a/text()").extract_first()
