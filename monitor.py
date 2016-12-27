@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
+from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
+from scrapy.contrib.spiders import CrawlSpider, Rule
 from models import ProductItem
 
 
@@ -15,8 +17,19 @@ kbm_map = {
 }
 
 
-class MonitorSpider(scrapy.Spider):
+class MonitorSpider(CrawlSpider):
     name = 'monitor'
+    allowed_domains = ["kabum.com.br"]
+
+    rules = (
+        Rule(
+            SgmlLinkExtractor(
+                allow=(),
+                restrict_xpaths=(
+                    "(//form[@name='listagem'])[last()]//td[last()]//a[1]")),
+            callback="parse_page",
+            follow=True),
+    )
 
     def __init__(self):
         self.start_urls = []
@@ -25,17 +38,6 @@ class MonitorSpider(scrapy.Spider):
                 self.start_urls.append(
                     BASE_URL_KBM + k + '/' + cat + URL_SUFIX_KBM)
         super(MonitorSpider, self).__init__()
-
-    def parse(self, response):
-        return scrapy.Request(response.url, self.parse_page)
-        # get_args = response.xpath(
-        #     "(//form[@name='listagem'])[last()]//td[last()]//a/@href"
-        # ).extract_first()
-
-        # if get_args:
-        #     url = response.url.split('?')[0]
-        #     url += get_args
-        #     scrapy.Request(url, callback=self.parse)
 
     def parse_page(self, response):
         listing = response.xpath("//div[@class='listagem-box']")
@@ -55,3 +57,4 @@ class MonitorSpider(scrapy.Spider):
             ).extract_first().split()[-1].replace('.', '').replace(',', '.'))
 
             yield product
+    parse_start_url = parse_page
