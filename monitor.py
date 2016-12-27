@@ -1,37 +1,57 @@
 # -*- coding: utf-8 -*-
 import scrapy
+from models import Product
 
 
-class Product(scrapy.Item):
-    name = scrapy.Field()
-    price = scrapy.Field()
-    platinum = scrapy.Field()
+MAX_ITEMS_KBM = 100
+BASE_URL_KBM = "http://www.kabum.com.br/"
+URL_SUFIX_KBM = "?limite=100"
+
+
+kbm_map = {
+    "hardware": [
+        "placa-de-video-vga"
+    ]
+}
 
 
 class MonitorSpider(scrapy.Spider):
     name = 'monitor'
 
-    def __init__(self, products=['guitarra-telecaster']):
-        self.start_urls = [
-            'http://lista.mercadolivre.com.br/%s' % product
-            for product in products]
+    def __init__(self):
+        self.start_urls = []
+        for k, v in kbm_map.iteritems():
+            for cat in v:
+                self.start_urls.append(
+                    BASE_URL_KBM + k + '/' + cat + URL_SUFIX_KBM)
         super(MonitorSpider, self).__init__()
 
     def parse(self, response):
-        row_items = response.xpath("//ol[@id='searchResults']")[0] \
-            .xpath(".//div[@class='rowItem']")
-        for row_item in row_items:
-            item = Product()
+        return scrapy.Request(response.url, self.parse_page)
+        # get_args = response.xpath(
+        #     "(//form[@name='listagem'])[last()]//td[last()]//a/@href"
+        # ).extract_first()
 
-            item['name'] = row_item.xpath(
-                ".//h2/a/text()").extract()
+        # if get_args:
+        #     url = response.url.split('?')[0]
+        #     url += get_args
+        #     scrapy.Request(url, callback=self.parse)
 
-            details = row_item.xpath(".//ul[@class='details']")[0]
+    def parse_page(self, response):
+        listing = response.xpath("//div[@class='listagem-box']")
 
-            item['price'] = details.xpath(".//span[@class='ch-price']")[0] \
-                .xpath("text()").extract()[0]
+        for item in listing:
+            product = Product()
 
-            item['platinum'] = details.xpath(
-                ".//li[@title='MercadoL&iacute;der Platinum']").extract() != []
+            product['name'] = item.xpath(
+                ".//span[@class='H-titulo']/a/text()").extract_first()
+            product['category'] = response.url.split('/')[-1].split('?')[0]
+            rating = item.xpath(
+                ".//div[@style='margin:0; font-size:10px;']/@class"
+            ).extract_first().split()[-1]
+            product['rating'] = 0 if rating == 'e' else int(rating[-1])
+            product['price'] = float(item.xpath(
+                ".//div[@class='listagem-precoavista']/b/text()"
+            ).extract_first().split()[-1].replace('.', '').replace(',', '.'))
 
-            yield item
+            yield product
