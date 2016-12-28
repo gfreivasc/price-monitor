@@ -15,19 +15,19 @@ import scrapy
 DeclarativeBase = declarative_base()
 
 
-class ProductItem(scrapy.Item):
-    name = scrapy.Field()
-    category = scrapy.Field()
-    rating = scrapy.Field()
-    price = scrapy.Field()
-
-
 def db_connect():
     return create_engine(URL(**settings.DATABASE))
 
 
 def create_tables(engine):
     DeclarativeBase.metadata.create_all(engine)
+
+
+class ProductItem(scrapy.Item):
+    name = scrapy.Field()
+    category = scrapy.Field()
+    rating = scrapy.Field()
+    price = scrapy.Field()
 
 
 class Product(DeclarativeBase):

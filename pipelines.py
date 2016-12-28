@@ -34,6 +34,6 @@ class PriceMonitorPipeline(object):
             session.rollback()
             raise
         finally:
-            session.close
+            session.close()
 
         return item
