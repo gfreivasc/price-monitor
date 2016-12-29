@@ -25,6 +25,7 @@ def create_tables(engine):
 
 class ProductItem(scrapy.Item):
     name = scrapy.Field()
+    url = scrapy.Field()
     category = scrapy.Field()
     rating = scrapy.Field()
     price = scrapy.Field()
@@ -35,6 +36,7 @@ class Product(DeclarativeBase):
 
     id = Column(Integer, primary_key=True)
     name = Column('name', String)
+    url = Column('url', String)
     category = Column('category', String)
     rating = Column('rating', Integer)
     prices = relationship("Price", backref="product")

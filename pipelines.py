@@ -15,6 +15,7 @@ class PriceMonitorPipeline(object):
         if product is None:
             product = Product(
                 name=item['name'],
+                url=item['url'],
                 category=item['category'],
                 rating=item['rating'],
                 last_price=item['price']
