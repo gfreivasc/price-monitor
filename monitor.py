@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from scrapy.contrib.linkextractors.lxmlhtml import LxmlLinkExtractor
+from scrapy.contrib.linkextractors import LinkExtractor
 from scrapy.contrib.spiders import CrawlSpider, Rule
 from models import ProductItem
 
@@ -22,7 +22,7 @@ class MonitorSpider(CrawlSpider):
 
     rules = (
         Rule(
-            LxmlLinkExtractor(
+            LinkExtractor(
                 allow=(),
                 restrict_xpaths=(
                     "(//form[@name='listagem'])[last()]//td[last()]//a[1]")),
