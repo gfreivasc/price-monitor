@@ -11,7 +11,7 @@ class PriceMonitorPipeline(object):
 
     def process_item(self, item, spider):
         session = self.Session()
-        product = session.query(Product).filter_by(name=item['name']).first()
+        product = session.query(Product).filter_by(name=item['url']).first()
         if product is None:
             product = Product(
                 name=item['name'],
