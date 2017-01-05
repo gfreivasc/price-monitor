@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from sqlalchemy import create_engine
 from sqlalchemy import Column
 from sqlalchemy import Integer
@@ -8,8 +9,7 @@ from sqlalchemy import Float
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.engine.url import URL
-import settings
-import scrapy
+from price_monitor import settings
 
 
 DeclarativeBase = declarative_base()
@@ -21,14 +21,6 @@ def db_connect():
 
 def create_tables(engine):
     DeclarativeBase.metadata.create_all(engine)
-
-
-class ProductItem(scrapy.Item):
-    name = scrapy.Field()
-    url = scrapy.Field()
-    category = scrapy.Field()
-    rating = scrapy.Field()
-    price = scrapy.Field()
 
 
 class Product(DeclarativeBase):

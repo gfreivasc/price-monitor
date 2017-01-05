@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 from sqlalchemy.orm import sessionmaker
-from models import db_connect, create_tables, Product, Price
+from price_monitor.db.models import db_connect, create_tables, Product, Price
 from datetime import datetime
 
 

@@ -1,21 +1,11 @@
 # -*- coding: utf-8 -*-
-from scrapy.contrib.linkextractors import LinkExtractor
-from scrapy.contrib.spiders import CrawlSpider, Rule
-from models import ProductItem
-
-BASE_URL_KBM = "http://www.kabum.com.br/"
-URL_SUFIX_KBM = "?limite=100"
+from scrapy.linkextractors import LinkExtractor
+from scrapy.spiders import CrawlSpider, Rule
+from price_monitor.items import ProductItem
 
 
-kbm_map = {
-    "hardware": [
-        "placa-de-video-vga"
-    ]
-}
-
-
-class MonitorSpider(CrawlSpider):
-    name = 'monitor'
+class KbmMonitorSpider(CrawlSpider):
+    name = 'kbm_monitor'
     allowed_domains = ['kabum.com.br']
     start_urls = ['https://www.kabum.com.br']
 
@@ -33,14 +23,6 @@ class MonitorSpider(CrawlSpider):
             callback='parse_page',
             follow=True),
     )
-
-    # def __init__(self):
-    #     self.start_urls = []
-    #     for k, v in kbm_map.iteritems():
-    #         for cat in v:
-    #             self.start_urls.append(
-    #                 BASE_URL_KBM + k + '/' + cat + URL_SUFIX_KBM)
-    #     super(MonitorSpider, self).__init__()
 
     def parse_page(self, response):
         listing = response.xpath('//div[@class="listagem-box"]')

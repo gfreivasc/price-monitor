@@ -1,6 +1,6 @@
-BOT_NAME = 'monitor'
+BOT_NAME = 'price_monitor'
 SPIDER_MODULES = [
-    'monitor'
+    'price_monitor.spiders.monitors'
 ]
 DATABASE = {
     'drivername': 'postgres',
@@ -11,5 +11,5 @@ DATABASE = {
     'database': 'price_monitor'
 }
 ITEM_PIPELINES = {
-    'pipelines.PriceMonitorPipeline': 300
+    'price_monitor.pipelines.PriceMonitorPipeline': 300
 }
