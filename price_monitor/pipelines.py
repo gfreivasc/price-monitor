@@ -19,7 +19,8 @@ class PriceMonitorPipeline(object):
                 url=item['url'],
                 category=item['category'],
                 rating=item['rating'],
-                last_price=item['price']
+                last_price=item['price'],
+                on_last_scan=True
             )
 
         price = Price(

@@ -5,6 +5,7 @@ from sqlalchemy import String
 from sqlalchemy import DateTime
 from sqlalchemy import ForeignKey
 from sqlalchemy import Float
+from sqlalchemy import Boolean
 from sqlalchemy.orm import relationship
 from price_monitor.db.database import DeclarativeBase
 
@@ -19,6 +20,7 @@ class Product(DeclarativeBase):
     rating = Column('rating', Integer)
     prices = relationship("Price", backref="product")
     last_price = Column('last_price', Float)
+    on_last_scan = Column('on_last_scan', Boolean)
 
 
 class Price(DeclarativeBase):

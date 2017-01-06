@@ -2,6 +2,8 @@
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
 from price_monitor.items import ProductItem
+from price_monitor.db.database import db_connect, db_session
+from price_monitor.db.models import Product
 
 
 class KbmMonitorSpider(CrawlSpider):
@@ -23,6 +25,23 @@ class KbmMonitorSpider(CrawlSpider):
             callback='parse_page',
             follow=True),
     )
+
+    def __init__(self, *args, **kwargs):
+        super(KbmMonitorSpider, self).__init__(*args, **kwargs)
+        self.mark_all_unseen()
+
+    def mark_all_unseen(self):
+        session = db_session(db_connect())
+
+        try:
+            session.query(Product).update(
+                {Product.on_last_scan: False}
+            )
+            session.commit()
+        except:
+            session.rollback()
+        finally:
+            session.close()
 
     def parse_page(self, response):
         listing = response.xpath('//div[@class="listagem-box"]')

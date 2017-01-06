@@ -14,4 +14,5 @@ def index():
         category = data.get(item.category, [])
         category.append(item.name)
         data[item.category] = category
+    session.close()
     return jsonify(**data)
