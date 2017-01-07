@@ -22,6 +22,8 @@ class PriceMonitorPipeline(object):
                 last_price=item['price'],
                 on_last_scan=True
             )
+        else:
+            product.on_last_scan = True
 
         price = Price(
             product=product,

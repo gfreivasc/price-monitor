@@ -27,8 +27,8 @@ class KbmMonitorSpider(CrawlSpider):
     )
 
     def __init__(self, *args, **kwargs):
-        super(KbmMonitorSpider, self).__init__(*args, **kwargs)
         self.mark_all_unseen()
+        super(KbmMonitorSpider, self).__init__(*args, **kwargs)
 
     def mark_all_unseen(self):
         session = db_session(db_connect())
