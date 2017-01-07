@@ -1,6 +1,7 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, Response
 from price_monitor.db.database import db_connect, db_session
 from price_monitor.db.models import Product
+import json
 
 app = Flask(__name__)
 
@@ -9,9 +10,9 @@ app = Flask(__name__)
 def index():
     session = db_session(db_connect())
     query = session.query(Product).all()
-    data = {}
+    buff = {}
     for item in query:
-        category = data.get(item.category, [])
+        category = buff.get(item.category, [])
         category.append({
             'id': item.id,
             'name': item.name,
@@ -19,9 +20,10 @@ def index():
             'last_price': item.last_price,
             'on_last_scan': item.on_last_scan
         })
-        data[item.category] = category
+        buff[item.category] = category
+    data = [{'name': k, 'products': v} for k, v in buff.iteritems()]
     session.close()
-    return jsonify(**data)
+    return Response(json.dumps(data), mimetype='application/json')
 
 
 @app.route('/p/<int:product_id>')
